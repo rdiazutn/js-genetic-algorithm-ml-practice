@@ -2,7 +2,7 @@ class Movable {
   constructor (x, y, angleOffset = 0) {
     this.position = createVector(x, y)
     this.velocity = createVector(0, 0)
-    this.aceleration = createVector(0, 1)
+    this.aceleration = createVector(0, 0.2)
     this.angleOffset = angleOffset
   }
 
@@ -15,7 +15,6 @@ class Movable {
     if (this.position.x > width || this.position.x < 0) {
       this.bounceX()
     }
-    this.aceleration = createVector(0, 0.2)
   }
 
   applyForce (force) {

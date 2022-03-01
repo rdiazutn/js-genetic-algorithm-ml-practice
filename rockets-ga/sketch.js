@@ -9,3 +9,11 @@ function draw() {
   rocket.move()
   rocket.display()
 }
+
+function mouseClicked() {
+  console.log(mouseX, mouseY)
+  const force = createVector(mouseX, mouseX)
+  force.normalize()
+  force.mult(0.1)
+  rocket.applyForce(force)
+}
