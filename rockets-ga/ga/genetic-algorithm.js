@@ -34,26 +34,31 @@ class Adn{
 class GeneticRocket extends Rocket {
   adn = null
   geneCounter = 0
+  fitness = 0
   constructor(dna) {
     super(startingPoint.x, startingPoint.y)
     this.adn = dna || new Adn()
   }
 
   live () {
-    if (this.fitness < 1) {
+    if (this.distance > 10) {
       this.applyForce(this.adn.genes[this.geneCounter])
       this.geneCounter++
       this.update()
+    } else {
+      this.freeze()
     }
+  }
+
+  get distance () {
+    return this.position.dist(destination) - destinationRadius / 2
   }
 
   setFitness () {
     const distanceFromOrigin = startingPoint.dist(destination)
-    const distance = this.position.dist(destination) - destinationRadius
-    const distanceFitness = Math.max(1 - distance / distanceFromOrigin, 0)
-    const lifeFitness = this.geneCounter / lifetime
-    console.log(lifeFitness)
-    this.fitness = distanceFitness * lifeFitness
+    const distanceFitness = Math.max(1 - this.distance / distanceFromOrigin, 0)
+    const lifeFitness = Math.max(1 - (this.geneCounter - 1) / lifetime, 0)
+    this.fitness = Math.pow(distanceFitness, 2) * lifeFitness
   }
 }
 
@@ -76,9 +81,6 @@ class GeneticAlgorithm {
   }
 
   run () {
-    if (this.fitness() === 1) {
-      return
-    }
     if (this.lifecounter < lifetime) {
       this.live()
       this.lifecounter ++
@@ -102,16 +104,17 @@ class GeneticAlgorithm {
     this.generateStats()
     // Selection
     this.matingPool = this.selection()
+    if (this.matingPool.length === 0) {
+      throw 'Mating pool empty'
+    }
     // Crossover and mutation
     this.reproduction()
   }
 
-
-
   selection () {
     const matingPool = []
     this.population.forEach(adn => {
-      for (let i = 0; i < (adn.fitness * adn.fitness * 10000); i++) {
+      for (let i = 0; i < (adn.fitness * 1000); i++) {
         matingPool.push(adn)
       }
     })

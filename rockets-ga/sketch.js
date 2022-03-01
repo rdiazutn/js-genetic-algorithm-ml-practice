@@ -2,7 +2,7 @@ let ga
 function setup() {
   createCanvas(600, 600)
   startingPoint = createVector(300, 550)
-  destination = createVector(width / 2, height / 6)
+  destination = createVector(100, height / 6)
   frameRate(120)
   ga = new GeneticAlgorithm()
 }
