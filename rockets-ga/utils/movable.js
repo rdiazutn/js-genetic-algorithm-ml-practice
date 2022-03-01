@@ -1,8 +1,9 @@
+const GRAVITY = 0.05
 class Movable {
   constructor (x, y, angleOffset = 0) {
     this.position = createVector(x, y)
     this.velocity = createVector(0, 0)
-    this.aceleration = createVector(0, 0.2)
+    this.aceleration = createVector(0, GRAVITY)
     this.angleOffset = angleOffset
   }
 
@@ -23,6 +24,7 @@ class Movable {
 
   bounceX () {
     this.velocity.x = -this.velocity.x
+    this.aceleration.x = -this.aceleration.x
   }
 
   bounceY () {
@@ -30,6 +32,7 @@ class Movable {
   }
 
   freeze () {
+    console.log('freeze')
     this.velocity.mult(0)
     this.aceleration.mult(0)
   }
