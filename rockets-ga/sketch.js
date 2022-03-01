@@ -1,11 +1,15 @@
-let rocket = null
+let ga
 function setup() {
   createCanvas(600, 600)
-  rocket = new Rocket(200, 200)
+  startingPoint = createVector(300, 550)
+  destination = createVector(width / 2, height / 6)
+  frameRate(120)
+  ga = new GeneticAlgorithm()
 }
 
 function draw() {
   background(220)
-  rocket.move()
-  rocket.display()
+  circle(destination.x, destination.y, destinationRadius)
+  fill(120)
+  ga.run()
 }

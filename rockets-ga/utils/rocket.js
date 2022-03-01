@@ -1,4 +1,6 @@
 class Rocket extends Movable{
+  size = 20
+  frozen = false
   constructor(x, y) {
     super(x, y, Math.PI / 2)
     // TODO: Remove
@@ -12,17 +14,23 @@ class Rocket extends Movable{
   freezeIfOutOfBounds () {
     if (this.position.y > height + 10) {
       this.freeze()
+      this.frozen = true
     }
+  }
+
+  update () {
+    this.move()
+    this.display()
   }
 
   display () {
     push()
-    const tRadius = 20
     translate(this.position.x, this.position.y)
+    // Point towards triangle direction
     rotate(this.angle())
-    const topPoint = createVector(0, tRadius)
-    const bottomLeftPoint = createVector(-tRadius/2, 0)
-    const bottomRightPoint = createVector(tRadius/2, 0)
+    const topPoint = createVector(0, this.size)
+    const bottomLeftPoint = createVector(-this.size/2, 0)
+    const bottomRightPoint = createVector(this.size/2, 0)
     triangle(topPoint.x, topPoint.y, bottomLeftPoint.x, bottomLeftPoint.y, bottomRightPoint.x, bottomRightPoint.y)
     pop()
   }

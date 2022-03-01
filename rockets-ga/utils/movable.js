@@ -1,9 +1,9 @@
 const GRAVITY = 0.05
 class Movable {
-  constructor (x, y, angleOffset = 0) {
+  constructor (x, y, angleOffset = 0, velocity = createVector(0, 0), aceleration = createVector(0, 0)) {
     this.position = createVector(x, y)
-    this.velocity = createVector(0, 0)
-    this.aceleration = createVector(0, GRAVITY)
+    this.velocity = velocity
+    this.aceleration = aceleration
     this.angleOffset = angleOffset
   }
 
@@ -16,6 +16,7 @@ class Movable {
     if (this.position.x > width || this.position.x < 0) {
       this.bounceX()
     }
+    this.aceleration.mult(0)
   }
 
   applyForce (force) {
@@ -32,7 +33,7 @@ class Movable {
   }
 
   freeze () {
-    console.log('freeze')
+    // console.log('freeze')
     this.velocity.mult(0)
     this.aceleration.mult(0)
   }
