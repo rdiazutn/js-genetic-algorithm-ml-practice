@@ -44,6 +44,7 @@ class GeneticRocket extends Rocket {
     if (this.distance > 10) {
       this.applyForce(this.adn.genes[this.geneCounter])
       this.geneCounter++
+      // Show only the rocket if has not reached the destination
       this.update()
     } else {
       this.freeze()
