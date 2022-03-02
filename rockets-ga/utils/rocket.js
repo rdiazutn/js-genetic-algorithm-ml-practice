@@ -1,6 +1,5 @@
 class Rocket extends Movable{
   size = 20
-  frozen = false
   constructor(x, y) {
     super(x, y, Math.PI / 2)
     // TODO: Remove
@@ -14,7 +13,6 @@ class Rocket extends Movable{
   freezeIfOutOfBounds () {
     if (this.position.y > height + 10) {
       this.freeze()
-      this.frozen = true
     }
   }
 

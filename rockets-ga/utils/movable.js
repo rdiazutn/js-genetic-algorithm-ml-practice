@@ -1,5 +1,6 @@
 const GRAVITY = 0.05
 class Movable {
+  frozen = false
   constructor (x, y, angleOffset = 0, velocity = createVector(0, 0), aceleration = createVector(0, 0)) {
     this.position = createVector(x, y)
     this.velocity = velocity
@@ -34,6 +35,7 @@ class Movable {
 
   freeze () {
     // console.log('freeze')
+    this.frozen = true
     this.velocity.mult(0)
     this.aceleration.mult(0)
   }

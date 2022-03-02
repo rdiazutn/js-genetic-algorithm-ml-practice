@@ -27,7 +27,7 @@ class Adn{
   }
 
   generateGene () {
-    return createVector(random(-10,10), random(-10,10)).mult(random(0, maxForce))
+    return createVector(random(-1,1), random(-1,1)).mult(random(0, maxForce))
   }
 }
 
@@ -35,31 +35,41 @@ class GeneticRocket extends Rocket {
   adn = null
   geneCounter = 0
   fitness = 0
+  crashed = false
   constructor(dna) {
     super(startingPoint.x, startingPoint.y)
     this.adn = dna || new Adn()
   }
 
   live () {
-    if (this.distance > 10) {
+    if (this.reached) {
+      this.freeze()
+    } else if (!this.frozen) {
       this.applyForce(this.adn.genes[this.geneCounter])
       this.geneCounter++
-      // Show only the rocket if has not reached the destination
-      this.update()
-    } else {
-      this.freeze()
     }
+    this.update()
+  }
+
+  crash () {
+    this.crashed = true
+    this.freeze()
+  }
+
+  get reached () {
+    return this.distance < (destinationRadius / 1.5)
   }
 
   get distance () {
-    return this.position.dist(destination) - destinationRadius / 2
+    return this.position.dist(destination)
   }
 
   setFitness () {
-    const distanceFromOrigin = startingPoint.dist(destination)
-    const distanceFitness = Math.max(1 - this.distance / distanceFromOrigin, 0)
-    const lifeFitness = Math.max(1 - (this.geneCounter - 1) / lifetime, 0)
-    this.fitness = Math.pow(distanceFitness, 2) * lifeFitness
+    const distance = this.distance
+    const lifeFitness = this.geneCounter
+    const crashedPenalty = this.crashed ? 0.1 : 1
+    const reachedFitness = this.reached ? 20 : 1
+    this.fitness = Math.pow(1 / (distance), 2) * (1 / crashedPenalty) * (1 / lifeFitness)* reachedFitness 
   }
 }
 
@@ -69,12 +79,13 @@ class GeneticAlgorithm {
   }
 
   setup () {
-    this.populationSize = 60
-    this.maxGenerations = 1000
+    this.canHaveSameParent = true
+    this.populationSize = 100
     this.generation = 0
     this.lifecounter = 0
     this.best = null
     this.population = []
+    this.obstacles = []
     for (let i = 0; i < this.populationSize ; i++) {
       const adn = new GeneticRocket()
       this.population.push(adn)
@@ -82,7 +93,7 @@ class GeneticAlgorithm {
   }
 
   run () {
-    if (this.lifecounter < lifetime) {
+    if (this.lifecounter < lifetime && !this.allCrashed()) {
       this.live()
       this.lifecounter ++
     } else {
@@ -92,8 +103,26 @@ class GeneticAlgorithm {
   }
 
   live () {
-    this.population.forEach(adn => adn.live())
+    this.obstacles.forEach(obstacle => obstacle.display())
+    this.population.forEach(rocket => {
+      rocket.live()
+      const hasCrashed = this.obstacles.some(obstacle => obstacle.isColliding(rocket))
+      if (hasCrashed) {
+        rocket.crash()
+      }
+    })
   }
+
+  // Physics
+  allCrashed () {
+    return this.population.every(rocket => rocket.frozen)
+  }
+
+  addObstacle (obstacle) {
+    this.obstacles.push(obstacle)
+  }
+
+  // GA
 
   nextGeneration () {
     // Fitness
@@ -106,7 +135,8 @@ class GeneticAlgorithm {
     // Selection
     this.matingPool = this.selection()
     if (this.matingPool.length === 0) {
-      throw 'Mating pool empty'
+      console.log('Mating pool empty')
+      throw Error('Mating pool empty')
     }
     // Crossover and mutation
     this.reproduction()
@@ -115,7 +145,7 @@ class GeneticAlgorithm {
   selection () {
     const matingPool = []
     this.population.forEach(adn => {
-      for (let i = 0; i < (adn.fitness * 1000); i++) {
+      for (let i = 0; i < (adn.fitness * 10000); i++) {
         matingPool.push(adn)
       }
     })
@@ -142,7 +172,7 @@ class GeneticAlgorithm {
     let posibleParent = null
     do {
       posibleParent = this.matingPool[Math.floor(Math.random() * this.matingPool.length)]
-    } while (posibleParent === parent)
+    } while (posibleParent === parent && !this.canHaveSameParent)
     return posibleParent
   }
 
