@@ -53,6 +53,7 @@ class GeneticRocket extends Rocket {
 
   crash () {
     this.crashed = true
+    this.geneCounter = lifetime
     this.freeze()
   }
 
@@ -66,10 +67,10 @@ class GeneticRocket extends Rocket {
 
   setFitness () {
     const distance = this.distance
-    const lifeFitness = this.geneCounter
+    const lifeFitness = (lifetime - this.geneCounter + 1) / lifetime
     const crashedPenalty = this.crashed ? 0.1 : 1
     const reachedFitness = this.reached ? 20 : 1
-    this.fitness = Math.pow(1 / (distance), 2) * (1 / crashedPenalty) * (1 / lifeFitness)* reachedFitness 
+    this.fitness = Math.pow(1 / (distance), 2) * crashedPenalty * reachedFitness
   }
 }
 
