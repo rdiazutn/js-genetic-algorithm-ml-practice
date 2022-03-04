@@ -1,0 +1,1 @@
+var learningConstant = 0.01

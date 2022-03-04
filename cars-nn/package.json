@@ -1,0 +1,20 @@
+{
+  "name": "rockets-ga",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "p5" : "browser-sync start --server --directory --files \"*,utils/*,ga/*\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rdiazutn/ml-practice.git"
+  },
+  "author": "rdiaz",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rdiazutn/ml-practice/issues"
+  },
+  "homepage": "https://github.com/rdiazutn/ml-practice#readme"
+}
