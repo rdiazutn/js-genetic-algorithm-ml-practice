@@ -1,1 +1,1 @@
-# tensorflow-practice
+# Genetic algorithms practice
